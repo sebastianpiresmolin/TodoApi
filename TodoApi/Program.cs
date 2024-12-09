@@ -1,25 +1,39 @@
+using Microsoft.EntityFrameworkCore;
+using TodoApi.Models;
+using TodoApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Lägg till tjänster i DI-containern
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers(); // Registrerar controller-tjänster för MVC mönstret
+
+// Konfigurerar en In-Memory-databas för TodoContext
+builder.Services.AddDbContext<TodoContext>(opt =>
+    opt.UseInMemoryDatabase("TodoList"));
+
+// Registrerar TodoItemService som en scoped-tjänst, vilket innebär att en ny instans 
+// skapas för varje HTTP-anrop
+builder.Services.AddScoped<TodoItemService>();
+
+// Konfigurerar Swagger-verktyg för att automatiskt generera API-dokumentation
+// och användargränssnitt för att testa API:et
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Konfiguration av HTTP-förfrågningspipelinje
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(); // Aktiverar middleware för att generera Swagger JSON endpoint
+    app.UseSwaggerUI(); // Aktiverar SwaggerUI, ett interaktivt interface för API-dokumentation
 }
 
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Tvingar omdirigering av inkommande HTTP-begäran till HTTPS
 
-app.UseAuthorization();
+app.UseAuthorization(); // Lägg till middleware för att hantera auktorisering
 
-app.MapControllers();
+app.MapControllers(); // Mappar controllers till slutpunkter
 
-app.Run();
+app.Run(); // Startar applikationen
