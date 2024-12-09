@@ -36,4 +36,4 @@ app.UseAuthorization(); // Lägg till middleware för att hantera auktorisering
 
 app.MapControllers(); // Mappar controllers till slutpunkter
 
-app.Run(); // Startar applikationen
+app.RunAsync(); // Startar applikationen
